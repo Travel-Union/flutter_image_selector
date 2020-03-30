@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - image_selector (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - image_selector (from `.symlinks/plugins/image_selector/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  image_selector:
+    :path: ".symlinks/plugins/image_selector/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  image_selector: dc564a7012bb76e8b9e2c6960566e7aa69368368
+
+PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
+
+COCOAPODS: 1.8.4
