@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:image_selector/image_selector.dart';
+import 'package:image_selector/gallery_image.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  List<GalleryImage> _images = [];
 
   @override
   void initState() {
@@ -22,14 +25,12 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
+    List<GalleryImage> images;
     try {
-      platformVersion = await ImageSelector.platformVersion;
+      images = await FlutterImageSelector.getImages;
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      images = [];
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _images = images;
     });
   }
 
@@ -50,7 +51,12 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: _images.length == 0
+              ? Text('No images selected')
+              : ListView.builder(
+                  itemCount: _images.length,
+                  itemBuilder: (ctx, index) => Image.file(File(_images[index].data)),
+                ),
         ),
       ),
     );

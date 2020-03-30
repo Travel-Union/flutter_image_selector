@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_title">Please select</string>
+    <string name="gallery_confirm">Confirm</string>
+    <string name="gallery_cancel">Cancel</string>
+    <string name="gallery_empty">No images available</string>
+    <string name="gallery_permission_denied">Permission to access images denied</string>
+</resources>
