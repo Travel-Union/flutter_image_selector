@@ -41,12 +41,17 @@ public class GetImagesTask extends AsyncTask<Void, Void, ArrayList<GalleryImage>
                 do {
                     GalleryImage image = new GalleryImage();
                     image.setName(imageCursor.getString(displayNameColumn));
-                    image.setData(imageCursor.getString(dataColumn));
+                    image.setPath(imageCursor.getString(dataColumn));
                     image.setDateTaken(imageCursor.getString(dateColumn));
                     image.setSize(imageCursor.getInt(sizeColumn));
                     imagesArray.add(image);
                 } while (imageCursor.moveToNext());
             }
+
+            try {
+                imageCursor.close();
+            } catch (Exception e) {}
+
             return imagesArray;
         } catch (Exception e) {
             Log.d("gallery_loader", e.toString());

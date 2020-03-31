@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.travelunion.image_selector.utils.GalleryImage;
 import com.travelunion.image_selector.utils.GalleryImageResult;
 import com.travelunion.image_selector.utils.ImageSelectorCodec;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -44,7 +47,7 @@ public class ImageSelectorPlugin implements FlutterPlugin, MethodCallHandler, Ac
   private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
   private static final int GALLERY_ACTIVITY = 1;
 
-  private void showGallery(@NonNull MethodChannel.Result result) {
+  private void showGallery() {
     try {
       if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
       {
@@ -113,12 +116,23 @@ public class ImageSelectorPlugin implements FlutterPlugin, MethodCallHandler, Ac
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     this.result = result;
 
-    if(call.method.equals("showGallery")) {
-      showGallery(result);
-    }
-    else {
+    if(call.method.equals("pickImages")) {
+      showGallery();
+    } else if(call.method.equals("getBitmap")) {
+      getBitmap((String) call.argument("path"));
+    } else {
       result.notImplemented();
     }
+  }
+
+  void getBitmap(String path) {
+    Bitmap image = BitmapFactory.decodeFile(path);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    image.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+    byte[] imageBytes = outputStream.toByteArray();
+    image.recycle();
+
+    result.success(imageBytes);
   }
 
   @Override
@@ -156,28 +170,20 @@ public class ImageSelectorPlugin implements FlutterPlugin, MethodCallHandler, Ac
   @Override
   public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == GALLERY_ACTIVITY) {
-      Log.d("image_selector", "Gallery activity");
       if (resultCode == Activity.RESULT_OK) {
-        Log.d("image_selector", "Result ok");
         if (data != null) {
-          Log.d("image_selector", "Data not null");
           try {
             ArrayList<GalleryImage> images = data.getParcelableArrayListExtra(("images"));
-            Log.d("image_selector", "Images " + images.size());
             result.success(new GalleryImageResult(images));
           } catch (Exception e) {
-            Log.d("image_selector", "Exception");
             result.success(false);
           }
         } else {
-          Log.d("image_selector", "Data null");
           result.success(false);
         }
-        Log.d("image_selector", "Result will be null");
         result = null;
         return true;
       } else {
-        Log.d("image_selector", "Result not ok");
         result.success(false);
         return true;
       }

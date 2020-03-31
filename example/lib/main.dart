@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -43,19 +43,35 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future _getBitmap(index) async {
+    return await FlutterImageSelector.getBitmap(_images[index].path);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('FlutterImageSelector'),
         ),
         body: Center(
           child: _images.length == 0
               ? Text('No images selected')
               : ListView.builder(
+                  scrollDirection: Axis.horizontal,
                   itemCount: _images.length,
-                  itemBuilder: (ctx, index) => Image.file(File(_images[index].data)),
+                  itemBuilder: (ctx, index) => FutureBuilder(
+                    builder: (ctx, snapshot) {
+                      if ((snapshot.connectionState == ConnectionState.none &&
+                          snapshot.hasData == null) || snapshot.data is! Uint8List) {
+                        return Container(child: CircularProgressIndicator(),);
+                      }
+
+                      return Image.memory(snapshot.data, height: 200, width: 200,);
+                    },
+                    future: _getBitmap(index),
+                  ),
                 ),
         ),
       ),

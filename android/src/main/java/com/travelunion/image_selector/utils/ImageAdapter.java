@@ -42,7 +42,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         final GalleryImage image = images.get(position);
 
         Glide.with(context)
-                .load(image.getData())
+                .load(image.getPath())
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.image);
 

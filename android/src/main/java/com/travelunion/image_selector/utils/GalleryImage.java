@@ -7,7 +7,7 @@ public class GalleryImage implements Parcelable {
     private  String name;
     private  String dateTaken;
     private int size = 0;
-    private String data;
+    private String path;
 
     public GalleryImage(){
 
@@ -29,12 +29,12 @@ public class GalleryImage implements Parcelable {
         this.dateTaken = dateTaken;
     }
 
-    public String getData() {
-        return data;
+    public String getPath() {
+        return path;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public int getSize() {
@@ -55,7 +55,7 @@ public class GalleryImage implements Parcelable {
         dest.writeString(name);
         dest.writeString(dateTaken);
         dest.writeInt(size);
-        dest.writeString(data);
+        dest.writeString(path);
     }
 
     public static final Parcelable.Creator<GalleryImage> CREATOR = new Parcelable.Creator<GalleryImage>() {
@@ -73,6 +73,6 @@ public class GalleryImage implements Parcelable {
         name = in.readString();
         dateTaken = in.readString();
         size = in.readInt();
-        data = in.readString();
+        path = in.readString();
     }
 }

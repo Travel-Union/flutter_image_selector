@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import io.flutter.plugin.common.StandardMessageCodec;
 
@@ -17,7 +18,10 @@ public class ImageSelectorCodec extends StandardMessageCodec {
     protected void writeValue(ByteArrayOutputStream stream, Object value) {
         if (value instanceof GalleryImageResult) {
             stream.write(IMAGE_RESULT);
-            String json = new Gson().toJson(((GalleryImageResult) value).images);
+
+            ArrayList<GalleryImage> images = ((GalleryImageResult) value).images;
+
+            String json = new Gson().toJson(images);
             writeBytes(stream, json.getBytes(UTF8));
         } else {
             super.writeValue(stream, value);

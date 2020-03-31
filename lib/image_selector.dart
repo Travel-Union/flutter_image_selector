@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
@@ -12,8 +13,13 @@ class FlutterImageSelector {
       StandardMethodCodec(ImageSelectorMessageCodec()));
 
   static Future<List<GalleryImage>> get getImages async {
-    final String result = await _channel.invokeMethod('showGallery');
-    Iterable folders = json.decode(result);
-    return folders.map((folder) => GalleryImage.fromJson(folder)).toList();
+    final String result = await _channel.invokeMethod('pickImages');
+    Iterable images = json.decode(result);
+    return images.map((image) => GalleryImage.fromJson(image)).toList();
+  }
+
+  static Future<Uint8List> getBitmap(String path) async {
+    final List<int> result = await _channel.invokeMethod('getBitmap', { "path": path });
+    return result;
   }
 }
